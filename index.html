@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Engineer Nadeim — منصة الرياضيات</title>
+<style>
+  :root{
+    --bg-deep:#03050d;
+    --bg-navy:#0a1128;
+    --gold:#d4af37;
+    --gold-light:#f3d877;
+    --gold-deep:#9c7a26;
+    --gold-soft:rgba(212,175,55,0.28);
+    --text-soft:#dce1f5;
+    --text-dim:#8d94b8;
+    --panel:rgba(15,21,52,0.68);
+    --border:rgba(212,175,55,0.22);
+    --border-soft:rgba(255,255,255,0.07);
+    --shadow:0 12px 32px rgba(0,0,0,0.4);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{
+    min-height:100vh;
+    background:radial-gradient(ellipse at 50% -10%,#14204f,var(--bg-navy) 45%,var(--bg-deep) 100%);
+    font-family:'Segoe UI','Tahoma',Arial,sans-serif;
+    color:var(--text-soft);
+    overflow-x:hidden;
+    padding-bottom:90px;
+  }
+  canvas#stars{position:fixed;inset:0;z-index:0;pointer-events:none;}
+  .top-line{position:fixed;top:0;left:0;right:0;height:3px;z-index:9;
+    background:linear-gradient(90deg,transparent,var(--gold-deep),var(--gold-light),var(--gold-deep),transparent);}
+  .orb{position:fixed;border-radius:50%;filter:blur(120px);pointer-events:none;z-index:0;}
+  .o1{width:65vw;height:65vw;background:radial-gradient(circle,rgba(91,141,239,0.15),transparent 70%);top:-25%;right:-20%;animation:d1 28s ease-in-out infinite;}
+  .o2{width:55vw;height:55vw;background:radial-gradient(circle,rgba(212,175,55,0.10),transparent 70%);bottom:-20%;left:-15%;animation:d2 32s ease-in-out infinite;}
+  .o3{width:40vw;height:40vw;background:radial-gradient(circle,rgba(63,190,142,0.09),transparent 70%);top:45%;left:30%;animation:d3 22s ease-in-out infinite;}
+  @keyframes d1{0%,100%{transform:translate(0,0);}50%{transform:translate(-8vw,7vh);}}
+  @keyframes d2{0%,100%{transform:translate(0,0);}50%{transform:translate(9vw,-7vh);}}
+  @keyframes d3{0%,100%{transform:translate(0,0);}50%{transform:translate(-5vw,9vh);}}
+
+  #app{position:relative;z-index:2;max-width:1000px;margin:0 auto;padding:22px 16px 30px;}
+
+  /* TOP BAR */
+  .topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;
+    padding:14px 20px;margin-bottom:30px;
+    background:linear-gradient(135deg,rgba(15,21,52,0.8),rgba(7,10,26,0.9));
+    border:1px solid var(--border);border-radius:16px;backdrop-filter:blur(10px);box-shadow:var(--shadow);}
+  .brand{display:flex;align-items:center;gap:12px;}
+  .brand .mk{width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,var(--gold-light),var(--gold-deep));
+    display:flex;align-items:center;justify-content:center;color:#1a1304;font-weight:900;font-size:13px;font-family:Georgia,serif;flex:0 0 auto;}
+  .brand .nm{font-family:Georgia,serif;color:var(--gold-light);font-size:13px;letter-spacing:2.5px;font-weight:700;text-transform:uppercase;}
+  .wa-btn{display:inline-flex;align-items:center;gap:7px;padding:9px 17px;border-radius:999px;
+    background:linear-gradient(135deg,#2bd97a,#1aa84f);color:#06250f;font-weight:800;font-size:12.5px;
+    text-decoration:none;box-shadow:0 4px 14px rgba(43,217,122,0.25);transition:transform .15s;}
+  .wa-btn:hover{transform:translateY(-1px);}
+
+  /* HERO */
+  .hero{text-align:center;padding:10px 12px 36px;}
+  .hero-pill{display:inline-flex;align-items:center;gap:8px;padding:7px 18px;border-radius:999px;
+    background:rgba(212,175,55,0.1);border:1px solid rgba(212,175,55,0.28);
+    font-size:12px;color:var(--gold);font-weight:700;margin-bottom:20px;letter-spacing:.3px;}
+  .hero-pill .dot{width:6px;height:6px;border-radius:50%;background:var(--gold);animation:blink 2s ease-in-out infinite;flex:0 0 auto;}
+  @keyframes blink{0%,100%{opacity:1;}50%{opacity:.2;}}
+  .hero h1{font-family:Georgia,serif;font-size:clamp(30px,7vw,70px);line-height:1.05;margin-bottom:14px;}
+  .hero h1 .ar{display:block;color:#fff;font-size:clamp(22px,4.5vw,40px);margin-bottom:4px;}
+  .hero h1 .en{display:block;background:linear-gradient(135deg,#f3d877,#d4af37,#9c7a26);
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+    letter-spacing:5px;}
+  .hero p{color:var(--text-dim);font-size:clamp(13px,2vw,15px);line-height:1.75;max-width:520px;margin:0 auto 28px;}
+  .hero-stats{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;}
+  .hstat{padding:9px 20px;border-radius:999px;background:rgba(255,255,255,0.04);
+    border:1px solid rgba(255,255,255,0.08);font-size:12.5px;color:var(--text-dim);display:flex;align-items:center;gap:8px;}
+  .hstat b{font-size:17px;color:var(--gold-light);font-weight:900;}
+
+  /* STAGE SECTIONS */
+  .stage{margin-bottom:38px;}
+  .stage-header{display:flex;align-items:center;gap:14px;margin-bottom:16px;padding-bottom:12px;
+    border-bottom:1px solid var(--border-soft);}
+  .stage-icon{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;
+    font-size:18px;flex:0 0 auto;}
+  .stage-info h2{font-size:clamp(16px,3.5vw,20px);color:var(--gold-light);font-weight:800;margin-bottom:2px;}
+  .stage-info p{font-size:12.5px;color:var(--text-dim);}
+
+  /* GRADE GRID */
+  .grade-grid{display:flex;gap:13px;}
+  .grade-grid .grade-card{flex:1;}
+
+  .grade-card{
+    position:relative;border-radius:18px;padding:22px 16px 18px;cursor:pointer;
+    background:linear-gradient(160deg,rgba(17,24,58,0.88),rgba(7,10,26,0.95));
+    border:1px solid var(--border-soft);overflow:hidden;
+    transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease;
+    opacity:0;animation:popIn .5s ease forwards;
+    text-align:center;text-decoration:none;display:block;
+  }
+  .grade-card::before{
+    content:"";position:absolute;inset:0;
+    background:radial-gradient(circle at 50% 0%,var(--ac,rgba(212,175,55,0.18)),transparent 65%);
+    opacity:0;transition:opacity .25s ease;
+  }
+  .grade-card:hover{transform:translateY(-6px);box-shadow:0 18px 38px rgba(0,0,0,0.5);border-color:var(--ac,var(--gold));}
+  .grade-card:hover::before{opacity:1;}
+  @keyframes popIn{from{opacity:0;transform:translateY(12px) scale(.97);}to{opacity:1;transform:translateY(0) scale(1);}}
+
+  .grade-num{
+    width:52px;height:52px;border-radius:15px;margin:0 auto 13px;
+    display:flex;align-items:center;justify-content:center;
+    font-family:Georgia,serif;font-size:22px;font-weight:900;
+    background:linear-gradient(150deg,var(--ac,var(--gold)),rgba(255,255,255,0.1));
+    color:#0a0e20;box-shadow:0 6px 18px rgba(0,0,0,0.35);
+  }
+  .grade-card .en-label{font-family:Georgia,serif;font-size:12px;color:var(--gold-light);
+    letter-spacing:1.5px;font-weight:700;text-transform:uppercase;display:block;margin-bottom:4px;}
+  .grade-card .ar-label{font-size:14px;color:var(--text-soft);font-weight:800;display:block;margin-bottom:10px;}
+  .grade-card .go-tag{
+    display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:700;
+    padding:5px 12px;border-radius:999px;
+    background:rgba(255,255,255,0.05);color:var(--text-dim);
+    border:1px solid rgba(255,255,255,0.07);
+    transition:background .18s,color .18s;
+  }
+  .grade-card:hover .go-tag{background:rgba(212,175,55,0.12);color:var(--gold-light);}
+  .grade-card.soon{cursor:default;}
+  .grade-card.soon:hover{transform:none;box-shadow:none;border-color:var(--border-soft);}
+  .grade-card.soon .grade-num{opacity:.45;filter:grayscale(.6);}
+  .grade-card.soon .go-tag{color:#555;border-color:#222;}
+  .grade-card.soon::before{display:none;}
+  .soon-badge{
+    position:absolute;top:10px;left:10px;
+    padding:3px 9px;border-radius:999px;font-size:10px;font-weight:800;
+    background:rgba(255,255,255,0.05);color:var(--text-dim);border:1px solid rgba(255,255,255,0.1);
+  }
+
+  /* Footer */
+  footer{position:fixed;bottom:0;left:0;right:0;z-index:8;
+    background:rgba(4,6,16,0.94);backdrop-filter:blur(12px);
+    border-top:1px solid var(--border);padding:11px 20px;
+    display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;
+    box-shadow:0 -8px 24px rgba(0,0,0,0.35);}
+  .f-brand{display:flex;align-items:center;gap:10px;}
+  .f-mk{width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,var(--gold-light),var(--gold-deep));
+    display:flex;align-items:center;justify-content:center;color:#1a1304;font-family:Georgia,serif;font-weight:900;font-size:12px;flex:0 0 auto;}
+  .f-meta .nm{font-family:Georgia,serif;color:var(--gold-light);font-size:12px;letter-spacing:1.5px;font-weight:700;text-transform:uppercase;display:block;}
+  .f-meta .ph{font-size:11px;color:var(--text-dim);direction:ltr;display:block;text-align:right;}
+  .f-wa{display:inline-flex;align-items:center;gap:7px;padding:9px 18px;border-radius:999px;
+    background:linear-gradient(135deg,#2bd97a,#1aa84f);color:#06250f;font-weight:800;font-size:12.5px;
+    text-decoration:none;box-shadow:0 6px 16px rgba(43,217,122,0.25);transition:transform .15s;}
+  .f-wa:hover{transform:translateY(-1px);}
+
+  @media(max-width:480px){
+    .topbar{flex-direction:column;align-items:flex-start;gap:10px;}
+    .grade-grid{grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;}
+  }
+</style>
+</head>
+<body>
+<div class="top-line"></div>
+<canvas id="stars"></canvas>
+<div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div>
+
+<div id="app">
+
+  <!-- TOP BAR -->
+  <header class="topbar">
+    <div class="brand">
+      <div class="mk">EN</div>
+      <span class="nm">ENGINEER NADEIM</span>
+    </div>
+    <a class="wa-btn" href="https://wa.me/201061782782?text=%D8%A7%D9%84%D8%B3%D9%84%D8%A7%D9%85%20%D8%B9%D9%84%D9%8A%D9%83%D9%85%2C%20%D8%A3%D8%B1%D9%8A%D8%AF%20%D8%A7%D9%84%D8%A7%D8%B3%D8%AA%D9%81%D8%B3%D8%A7%D8%B1%20%D8%B9%D9%86%20%D9%85%D9%86%D8%B5%D8%A9%20%D8%A7%D9%84%D8%B1%D9%8A%D8%A7%D8%B6%D9%8A%D8%A7%D8%AA" target="_blank" rel="noopener">💬 تواصل معنا</a>
+  </header>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-pill"><span class="dot"></span>منصة تعليمية تفاعلية · Math Platform</div>
+    <h1>
+      <span class="ar">منصة الماث للمهندس نديم</span>
+      <span class="en">MATH</span>
+    </h1>
+    <p>من الصف الأول الابتدائي حتى الثالث الإعدادي — شرح فيديو، ملفات PDF، وكويزات تفاعلية لكل درس</p>
+    <div class="hero-stats">
+      <div class="hstat"><b>9</b> صفوف دراسية</div>
+      <div class="hstat"><b>100+</b> درس</div>
+      <div class="hstat"><b>مجانًا</b> 100%</div>
+    </div>
+  </div>
+
+  <!-- ابتدائي -->
+  <div class="stage">
+    <div class="stage-header">
+      <div class="stage-icon" style="background:rgba(91,141,239,0.18);color:#7aaaf5;font-size:22px;">🏫</div>
+      <div class="stage-info">
+        <h2>المرحلة الابتدائية</h2>
+        <p>Primary School · الصف الأول ← السادس</p>
+      </div>
+    </div>
+    <div class="grade-grid" id="primaryGrid1"></div>
+    <div style="height:13px"></div>
+    <div class="grade-grid" id="primaryGrid2"></div>
+  </div>
+
+  <!-- إعدادي -->
+  <div class="stage">
+    <div class="stage-header">
+      <div class="stage-icon" style="background:rgba(212,175,55,0.15);color:var(--gold-light);font-size:22px;">🎓</div>
+      <div class="stage-info">
+        <h2>المرحلة الإعدادية</h2>
+        <p>Preparatory School · الصف الأول ← الثالث</p>
+      </div>
+    </div>
+    <div class="grade-grid three" id="prepGrid"></div>
+  </div>
+
+</div>
+
+<footer>
+  <div class="f-brand">
+    <div class="f-mk">EN</div>
+    <div class="f-meta">
+      <span class="nm">Engineer Nadeim</span>
+      <span class="ph">+20 106 178 2782</span>
+    </div>
+  </div>
+  <a class="f-wa" href="https://wa.me/201061782782?text=%D8%A7%D9%84%D8%B3%D9%84%D8%A7%D9%85%20%D8%B9%D9%84%D9%8A%D9%83%D9%85" target="_blank" rel="noopener">
+    <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor"><path d="M12 2.5a9.4 9.4 0 0 0-8.2 13.9L2.5 21.5l5.3-1.3A9.4 9.4 0 1 0 12 2.5Z"/></svg>
+    واتساب
+  </a>
+</footer>
+
+<script>
+const PRIMARY = [
+  { grade:1, arLabel:'الصف الأول الابتدائي',  enLabel:'Grade 1', accent:'#5B8DEF', url:'https://nadeim80-cmyk.github.io/math1lPLATFORM/', ready:false },
+  { grade:2, arLabel:'الصف الثاني الابتدائي', enLabel:'Grade 2', accent:'#3FBE8E', url:'https://nadeim80-cmyk.github.io/math2lPLATFORM/', ready:false },
+  { grade:3, arLabel:'الصف الثالث الابتدائي', enLabel:'Grade 3', accent:'#3FB8C9', url:'https://nadeim80-cmyk.github.io/math3lPLATFORM/', ready:false },
+  { grade:4, arLabel:'الصف الرابع الابتدائي',  enLabel:'Grade 4', accent:'#D9A441', url:'https://nadeim80-cmyk.github.io/math4lPLATFORM/', ready:true  },
+  { grade:5, arLabel:'الصف الخامس الابتدائي', enLabel:'Grade 5', accent:'#D9667B', url:'https://nadeim80-cmyk.github.io/math5lPLATFORM/', ready:false },
+  { grade:6, arLabel:'الصف السادس الابتدائي', enLabel:'Grade 6', accent:'#9B7FE0', url:'https://nadeim80-cmyk.github.io/math6lPLATFORM/', ready:true  },
+];
+const PREP = [
+  { grade:1, arLabel:'الصف الأول الإعدادي',  enLabel:'Grade 7', accent:'#5B8DEF', url:'https://nadeim80-cmyk.github.io/math7lPLATFORM/', ready:false },
+  { grade:2, arLabel:'الصف الثاني الإعدادي', enLabel:'Grade 8', accent:'#3FBE8E', url:'https://nadeim80-cmyk.github.io/math8lPLATFORM/', ready:false },
+  { grade:3, arLabel:'الصف الثالث الإعدادي', enLabel:'Grade 9', accent:'#D9A441', url:'https://nadeim80-cmyk.github.io/math9lPLATFORM/', ready:false },
+];
+
+function cardHtml(d, idx, label){
+  const delay = idx * 0.06;
+  if(d.ready){
+    return `<a class="grade-card" href="${d.url}" target="_blank" rel="noopener"
+      style="--ac:${d.accent};animation-delay:${delay}s">
+      <div class="grade-num">${d.grade}</div>
+      <span class="en-label">${d.enLabel}</span>
+      <span class="ar-label">${d.arLabel}</span>
+      <span class="go-tag">ادخل المنصة ←</span>
+    </a>`;
+  } else {
+    return `<div class="grade-card soon" style="--ac:${d.accent}44;animation-delay:${delay}s">
+      <div class="soon-badge">قريبًا</div>
+      <div class="grade-num">${d.grade}</div>
+      <span class="en-label">${d.enLabel}</span>
+      <span class="ar-label">${d.arLabel}</span>
+      <span class="go-tag">قيد الإعداد</span>
+    </div>`;
+  }
+}
+
+document.getElementById('primaryGrid1').innerHTML = PRIMARY.slice(0,3).map((d,i)=>cardHtml(d,i)).join('');
+document.getElementById('primaryGrid2').innerHTML = PRIMARY.slice(3,6).map((d,i)=>cardHtml(d,i)).join('');
+document.getElementById('prepGrid').innerHTML     = PREP.map((d,i)=>cardHtml(d,i)).join('');
+
+/* STARS */
+(function(){
+  const c=document.getElementById('stars'),ctx=c.getContext('2d');
+  const reduced=window.matchMedia&&window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+  const GLYPHS=['+','−','×','÷','=','π'];
+  let w,h,stars=[],glyphs=[];
+  function resize(){
+    w=c.width=window.innerWidth;h=c.height=window.innerHeight;
+    const cnt=Math.floor(w*h/10000);
+    stars=Array.from({length:cnt},()=>({x:Math.random()*w,y:Math.random()*h,r:Math.random()*1.2+0.2,tw:Math.random()*Math.PI*2,sp:Math.random()*.013+.004}));
+    const gc=Math.max(8,Math.floor(w*h/110000));
+    glyphs=Array.from({length:gc},()=>({x:Math.random()*w,y:Math.random()*h,ch:GLYPHS[Math.floor(Math.random()*GLYPHS.length)],sz:Math.random()*12+14,tw:Math.random()*Math.PI*2,ts:Math.random()*.012+.005,vy:Math.random()*.12+.04}));
+  }
+  function draw(){
+    ctx.clearRect(0,0,w,h);
+    for(const s of stars){s.tw+=s.sp;const a=.3+Math.sin(s.tw)*.28;ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fillStyle=`rgba(243,216,119,${a})`;ctx.fill();}
+    for(const g of glyphs){g.tw+=g.ts;g.y-=g.vy;if(g.y<-30){g.y=h+30;g.x=Math.random()*w;}const a=.07+Math.sin(g.tw)*.05;ctx.font=`${g.sz}px Georgia,serif`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillStyle=`rgba(243,216,119,${a})`;ctx.fillText(g.ch,g.x,g.y);}
+    if(!reduced)requestAnimationFrame(draw);
+  }
+  window.addEventListener('resize',resize);
+  resize();draw();
+})();
+</script>
+</body>
+</html>
