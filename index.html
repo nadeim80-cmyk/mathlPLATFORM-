@@ -121,7 +121,7 @@
     transition:background .18s,color .18s;
   }
   .grade-card:hover .go-tag{background:rgba(212,175,55,0.12);color:var(--gold-light);}
-  .grade-card.soon{cursor:default;}
+  .grade-card.soon{cursor:default;pointer-events:none;}
   .grade-card.soon:hover{transform:none;box-shadow:none;border-color:var(--border-soft);}
   .grade-card.soon .grade-num{opacity:.45;filter:grayscale(.6);}
   .grade-card.soon .go-tag{color:#555;border-color:#222;}
@@ -233,12 +233,12 @@ const PRIMARY = [
   { grade:2, arLabel:'الصف الثاني الابتدائي', enLabel:'Grade 2', accent:'#3FBE8E', url:'https://nadeim80-cmyk.github.io/math2lPLATFORM/', ready:false },
   { grade:3, arLabel:'الصف الثالث الابتدائي', enLabel:'Grade 3', accent:'#3FB8C9', url:'https://nadeim80-cmyk.github.io/math3lPLATFORM/', ready:false },
   { grade:4, arLabel:'الصف الرابع الابتدائي',  enLabel:'Grade 4', accent:'#D9A441', url:'https://nadeim80-cmyk.github.io/math4lPLATFORM/', ready:true  },
-  { grade:5, arLabel:'الصف الخامس الابتدائي', enLabel:'Grade 5', accent:'#D9667B', url:'https://nadeim80-cmyk.github.io/math5lPLATFORM/', ready:false },
+  { grade:5, arLabel:'الصف الخامس الابتدائي', enLabel:'Grade 5', accent:'#D9667B', url:'https://nadeim80-cmyk.github.io/math5lPLATFORM/', ready:true  },
   { grade:6, arLabel:'الصف السادس الابتدائي', enLabel:'Grade 6', accent:'#9B7FE0', url:'https://nadeim80-cmyk.github.io/math6lPLATFORM/', ready:true  },
 ];
 const PREP = [
-  { grade:1, arLabel:'الصف الأول الإعدادي',  enLabel:'Grade 7', accent:'#5B8DEF', url:'https://nadeim80-cmyk.github.io/math7lPLATFORM/', ready:false },
-  { grade:2, arLabel:'الصف الثاني الإعدادي', enLabel:'Grade 8', accent:'#3FBE8E', url:'https://nadeim80-cmyk.github.io/math8lPLATFORM/', ready:false },
+  { grade:1, arLabel:'الصف الأول الإعدادي',  enLabel:'Grade 7', accent:'#5B8DEF', url:'https://nadeim80-cmyk.github.io/math7lPLATFORM/', ready:true  },
+  { grade:2, arLabel:'الصف الثاني الإعدادي', enLabel:'Grade 8', accent:'#3FBE8E', url:'https://nadeim80-cmyk.github.io/math8lPLATFORM/', ready:true  },
   { grade:3, arLabel:'الصف الثالث الإعدادي', enLabel:'Grade 9', accent:'#D9A441', url:'https://nadeim80-cmyk.github.io/math9lPLATFORM/', ready:false },
 ];
 
